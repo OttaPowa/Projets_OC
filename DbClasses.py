@@ -25,7 +25,6 @@ class Product:
                  picture_url="",
                  brand="",
                  store="",
-                 description="",
                  nutriscore="",
                  category=""):
 
@@ -34,7 +33,6 @@ class Product:
         self.picture_url = picture_url
         self.brand = brand
         self.store = store
-        self.description = description
         self.nutriscore = nutriscore
         self.category = category
 

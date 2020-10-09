@@ -11,6 +11,7 @@ class PrepareData:
     cleaned_categories = []
 
     all_products = []
+    products = []
 
     @classmethod
     def get_and_clean_categories(cls):
@@ -66,25 +67,29 @@ class PrepareData:
                 page_nbr += 1
 
                 for prod in result["products"]:
-
                     try:
-                        temp_prod.append((prod["product_name_fr"], prod["url"], prod["image_url"],
-                                                     prod["brands"], prod["stores"], prod["generic_name_fr"],
-                                                     prod["nutrition_grades"]))
-
+                        temp_prod.append((prod["product_name_fr"], prod["url"], prod["image_url"], prod["brands"],
+                                          prod["stores"], prod["nutrition_grades"]))
                     except KeyError:
                         del_el += 1
                         pass
-
             else:
                 page_nbr = 1
 
             cls.all_products.append(temp_prod)
             position_in_cat_list += 1
 
+        """for i in cls.all_products:
+            print(i)
+            if i[:][4] == "" or i[:][5] == "":
+                pass
+            else:
+                print(i)
+                cls.products.append(i)
+
         print(len(cls.all_products))
 
-        print(cls.all_products)
+        print(cls.all_products)"""
 
 
     # OK ca marche !! all catégory = liste de 27 listes correspondat aux tuples des produits (position cat.name = position all product)

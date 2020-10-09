@@ -12,6 +12,7 @@ class ManageDb:
     connexion = mysql.connector.connect(user="root", password="Donn1eDark0", database="projet5")
     cursor = connexion.cursor()
 
+
     SQL_CAT_INSERT = """INSERT INTO category (name,url) VALUES (%(name)s, %(url)s)"""
 
     @classmethod
@@ -31,60 +32,55 @@ class ManageDb:
         """
             build the MySQL database
         """
+        print("Contruction de la base de données...")
 
+        DATA_BASE_SQL = """
+                        DROP TABLE IF EXISTS category;
+                        DROP TABLE IF EXISTS product;
+                        DROP TABLE IF EXISTS store;
+                        DROP TABLE IF EXISTS brand;
+                        
+                        CREATE TABLE category(
+                            id int NOT NULL AUTO_INCREMENT,
+                            name varchar(200) DEFAULT NULL,
+                            url varchar(300) DEFAULT NULL,
+                            PRIMARY KEY(id))ENGINE=InnoDB;
 
-        print("contruction de la base")
+                        CREATE TABLE product (
+                            id int NOT NULL AUTO_INCREMENT,
+                            name varchar(200) DEFAULT NULL,
+                            url varchar(300) DEFAULT NULL,
+                            picture_url varchar(300) DEFAULT NULL,
+                            nutriscore varchar(20) DEFAULT NULL,
+                            description text DEFAULT NULL,
+                            brand varchar (50) DEFAULT NULL,
+                            stores text DEFAULT NULL,
+                            category_id smallint DEFAULT NULL,
+                            PRIMARY KEY(id))
+                            ENGINE=InnoDB;
 
-        cls.cursor.execute("""
-            DROP TABLE IF EXISTS category;
-            DROP TABLE IF EXISTS product;
-            DROP TABLE IF EXISTS store;
-            DROP TABLE IF EXISTS brand;
-            DROP TABLE IF EXISTS user_saves;
-            
-            CREATE TABLE category (
-                id int NOT NULL AUTO_INCREMENT,
-                name varchar(200) DEFAULT NULL,
-                url varchar(300) DEFAULT NULL,
-                PRIMARY KEY(id))
-                ENGINE=InnoDB;
-                
-            CREATE TABLE IF NOT EXISTS product (
-                id int NOT NULL AUTO_INCREMENT,
-                name varchar(200) DEFAULT NULL,
-                url varchar(300) DEFAULT NULL,
-                picture_url varchar(300) DEFAULT NULL,
-                nutriscore varchar(20) DEFAULT NULL,
-                description text DEFAULT NULL,
-                brand varchar (50) DEFAULT NULL,
-                stores text DEFAULT NULL,
-                category_id smallint DEFAULT NULL,
-                PRIMARY KEY(id))
-                ENGINE=InnoDB;
-                
-            CREATE TABLE IF NOT EXISTS store (
-                id int NOT NULL AUTO_INCREMENT,
-                name varchar(200) DEFAULT NULL,
-                url varchar(300) DEFAULT NULL,
-                PRIMARY KEY(id))
-                ENGINE=InnoDB;
-                
-            CREATE TABLE IF NOT EXISTS brand (
-                id int NOT NULL AUTO_INCREMENT,
-                name varchar(200) DEFAULT NULL,
-                url varchar(300) DEFAULT NULL,
-                PRIMARY KEY(id))
-                ENGINE=InnoDB;
-                
-            CREATE TABLE IF NOT EXISTS user_saves (
-                id_product 1 int DEFAULT NULL,
-                nutriscore 1 varchar(20) DEFAULT NULL,
-                id_product 2 int DEFAULT NULL,
-                nutriscore 2 varchar(20) DEFAULT NULL)
-                ENGINE=InnoDB;"""
-                           , multi=True)
+                        CREATE TABLE store (
+                            id int NOT NULL AUTO_INCREMENT,
+                            name varchar(200) DEFAULT NULL,
+                            url varchar(300) DEFAULT NULL,
+                            PRIMARY KEY(id))
+                            ENGINE=InnoDB;
 
+                        CREATE TABLE brand (
+                            id int NOT NULL AUTO_INCREMENT,
+                            name varchar(200) DEFAULT NULL,
+                            url varchar(300) DEFAULT NULL,
+                            PRIMARY KEY(id))
+                            ENGINE=InnoDB;"""
+
+        for result in cls.cursor.execute(DATA_BASE_SQL, multi=True):
+            pass
+
+        """cls.connexion.commit()
         cls.cursor.close()
+        cls.connexion.close()"""
+
+        print("La base de données à été crée.")
 
     @classmethod
     def delete(cls):
@@ -98,13 +94,11 @@ class ManageDb:
         update the database data...
 
         """
-        for i in PrepareData.obj_cat:
-            cls.cursor.execute('INSERT INTO category(name,url) VALUES(' + i.name + ',' + i.url + ');')
 
-        cls.cursor.execute("""
-                                SELECT *
-                                FROM category;
-                                """)
+        cls.cursor.execute("show tables")
+
+        for x in cls.cursor:
+            print(x)
 
     @classmethod
     def fill_db(cls):
@@ -114,6 +108,6 @@ class ManageDb:
 
         sql = "INSERT INTO category (name, url) VALUES (%s, %s)"
 
-        for i in PrepareData.obj_cat:
-            print(i.name)
+        for i in PrepareData.instantiated_categories:
+            print(f'insertion de {i.name} dans la base de données')
             cls.cursor.execute(sql, (i.name, i.url))

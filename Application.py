@@ -7,9 +7,9 @@ def main():
     PrepareData.get_and_clean_categories()
     PrepareData.instantiate_categories()
     PrepareData.get_and_clean_products()
-    """ManageDb.build_db()
-    ManageDb.fill_db()
-    ManageDb.update()"""
+    ManageDb.build_db()
+    ManageDb.update()
+
 
 
 
