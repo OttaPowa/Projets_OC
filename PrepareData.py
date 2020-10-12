@@ -2,7 +2,7 @@
 
 import json
 import requests
-from DbClasses import Category
+from DbClasses import Category, Product
 
 
 class PrepareData:
@@ -11,7 +11,7 @@ class PrepareData:
     cleaned_categories = []
 
     all_products = []
-    products = []
+    instantiated_products = []
 
     @classmethod
     def get_and_clean_categories(cls):
@@ -40,6 +40,9 @@ class PrepareData:
 
     @classmethod
     def instantiate_categories(cls):
+        """
+            instantiate the categories into the class Category
+        """
 
         for data in cls.cleaned_categories:
             # create object instance
@@ -50,13 +53,17 @@ class PrepareData:
 
     @classmethod
     def get_and_clean_products(cls):
+        """
+            get the products by the API and clean the obtained data
+        """
 
-        position_in_cat_list = 0
-        page_nbr = 1
-        del_el = 0
+        position_in_cat_list = 0    # counter to change the url in the instantiated_categories
+        page_nbr = 1    # counter to go forward in the pages of the products
+        del_el = 0    # elements ignored because of a missing key corresponding to a needed data
+        x = 0    # counter to display the final number of products contained in each categorie
 
         for cat in cls.instantiated_categories:
-            temp_prod = []
+            temp_prod = []  # temporary list of product for the current category
 
             https = cls.instantiated_categories[position_in_cat_list].url
 
@@ -79,20 +86,36 @@ class PrepareData:
             cls.all_products.append(temp_prod)
             position_in_cat_list += 1
 
-        """for i in cls.all_products:
-            print(i)
-            if i[:][4] == "" or i[:][5] == "":
-                pass
-            else:
-                print(i)
-                cls.products.append(i)
+        print(f'\n{del_el} produits ont été ignorés car une clé était manquante\n')
 
-        print(len(cls.all_products))
+        for i in cls.all_products:
 
-        print(cls.all_products)"""
+            print(f'{len(i)} produits ont été récupérés dans la catégorie {cls.instantiated_categories[x].name}')
+            x += 1
 
+    @classmethod
+    def instantiate_products(cls):
 
-    # OK ca marche !! all catégory = liste de 27 listes correspondat aux tuples des produits (position cat.name = position all product)
+        for my_list in cls.all_products:
+            for my_product in my_list:
+                # instantiate only the products which contains all the needed data
+
+                if my_product[0] == "" or my_product[1] == "" or my_product[2] == "" or my_product[3] == "" or \
+                        my_product[4] == "" or my_product[5] == "":
+                    pass
+                else:
+                    # create object instance
+
+                    my_data = Product(
+                        my_product[0],
+                        my_product[1],
+                        my_product[2],
+                        my_product[3],
+                        my_product[4],
+                        my_product[5])
+
+                    cls.instantiated_products.append(my_data)
+
 
 
 

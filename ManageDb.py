@@ -22,13 +22,7 @@ class ManageDb:
         """
 
     @classmethod
-    def connect(cls):
-        """
-            connect to the MySQL database
-        """
-
-    @classmethod
-    def build_db(cls):
+    def build(cls):
         """
             build the MySQL database
         """
@@ -76,8 +70,8 @@ class ManageDb:
         for result in cls.cursor.execute(DATA_BASE_SQL, multi=True):
             pass
 
-        """cls.connexion.commit()
-        cls.cursor.close()
+        cls.connexion.commit()
+        """cls.cursor.close()  # toutes ces instructions plantent !
         cls.connexion.close()"""
 
         print("La base de données à été crée.")
@@ -89,7 +83,7 @@ class ManageDb:
         """
 
     @classmethod
-    def update(cls):
+    def show_tables(cls):
         """
         update the database data...
 
@@ -101,13 +95,25 @@ class ManageDb:
             print(x)
 
     @classmethod
-    def fill_db(cls):
+    def select(cls):
+        """
+            select function in SQL
+        """
+        x = "*"
+        print(cls.cursor.execute(f"select {x} from category")) # ne marche pas
+
+
+    @classmethod
+    def fill(cls):
         """
             fill the database with the transformed API data
         """
 
-        sql = "INSERT INTO category (name, url) VALUES (%s, %s)"
+        SQL = "INSERT INTO category (name, url) VALUES (%s, %s)"
 
         for i in PrepareData.instantiated_categories:
             print(f'insertion de {i.name} dans la base de données')
-            cls.cursor.execute(sql, (i.name, i.url))
+            cls.cursor.execute(SQL, (i.name, i.url))
+        cls.connexion.commit()
+
+        # tout bon ca focntionne il faut remplir les produits maintenat et voir comment gérér les brands et les stores avec clé etrangères et containtes

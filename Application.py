@@ -3,13 +3,17 @@ from ManageDb import*
 
 
 def main():
-
+    # get and clean the data
     PrepareData.get_and_clean_categories()
     PrepareData.instantiate_categories()
     PrepareData.get_and_clean_products()
-    ManageDb.build_db()
-    ManageDb.update()
+    PrepareData.instantiate_products()
 
+    # build and fill de data base
+    ManageDb.build()
+    ManageDb.show_tables()
+    ManageDb.fill()
+    ManageDb.select()
 
 
 
