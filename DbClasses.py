@@ -26,7 +26,24 @@ class Product:
                  brand="",
                  store="",
                  nutriscore="",
-                 category=""):
+                 category= ""):
+        """
+            Constructor
+            :param arg1: name of the product
+            :type arg1: string
+            :param arg2: url of the product
+            :type arg2: string
+            :param arg3: url of the picture of the product
+            :type arg3: string
+            :param arg4: brand of the product
+            :type arg4: string
+            :param arg5: stores were the product can be bought
+            :type arg5: string
+            :param arg6: nutriscore of the product
+            :type arg6: string
+            :param arg7: category of the product
+            :type arg7: string
+        """
 
         self.name = name
         self.url = url
@@ -37,13 +54,21 @@ class Product:
         self.category = category
 
 
-class Store(Category):
+class Brand:
+    def __init__(self,
+                 name=""):
+        """
+            Constructor
+            :param arg1: name of the product
+            :type arg1: string
+        """
+
+        self.name = name
+
+
+class Store(Brand):
     """
         child class of Category
     """
 
 
-class Brand(Category):
-    """
-        child class of Category
-    """

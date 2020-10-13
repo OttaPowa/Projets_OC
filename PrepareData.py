@@ -116,6 +116,30 @@ class PrepareData:
 
                     cls.instantiated_products.append(my_data)
 
+    @classmethod
+    def get_and_instantiate_brands_and_stores(cls):
+
+        # get and sort the brands, eliminating multiple occurencies and similar names
+
+        temp_brand_list = []
+        var1 = ""
+        var2 = ""
+
+        for brand in cls.instantiated_products:
+            # eliminating multiple occurencies
+            try:
+                var1, var2 = brand.brand.split(",")
+            except ValueError:
+                pass
+                temp_brand_list.append(var1)
+                temp_brand_list.append(var2)
+
+        sorted_brands = list(set(temp_brand_list))
+        print(sorted_brands)
+
+
+            # eliminating similar names (" U" et "U", "eco+" et "E.C.O+, "Carrefour bio" et "Carrefour Bio")
+
 
 
 
