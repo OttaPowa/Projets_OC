@@ -95,31 +95,39 @@ class PrepareData:
 
     @classmethod
     def instantiate_products(cls):
+        empty_slot = 0
 
         for my_list in cls.all_products:
             for my_product in my_list:
                 # instantiate only the products which contains all the needed data
+                for elem in range(len(my_product)):
+                    if my_product[elem] == "":
+                        """if my_product[0] == "" or my_product[1] == "" or my_product[2] == "" or my_product[3] == "" or \
+                        my_product[4] == "" or my_product[5] == "":"""
+                        empty_slot += 1
+                        pass
+                    else:
+                        # create object instance
 
-                if my_product[0] == "" or my_product[1] == "" or my_product[2] == "" or my_product[3] == "" or \
-                        my_product[4] == "" or my_product[5] == "":
-                    pass
-                else:
-                    # create object instance
+                        my_data = Product(
+                            my_product[0],
+                            my_product[1],
+                            my_product[2],
+                            my_product[3],
+                            my_product[4],
+                            my_product[5])
 
-                    my_data = Product(
-                        my_product[0],
-                        my_product[1],
-                        my_product[2],
-                        my_product[3],
-                        my_product[4],
-                        my_product[5])
+                        cls.instantiated_products.append(my_data)
+        print(f"\n{empty_slot} produits ont été ignorés car il manquait des données")
 
-                    cls.instantiated_products.append(my_data)
+
 
     @classmethod
     def get_and_instantiate_brands_and_stores(cls):
 
-        # get and sort the brands, eliminating multiple occurencies and similar names
+        """
+             get and sort the brands and the stores, eliminating multiple occurencies and similar names
+        """
 
         temp_brand_list = []
         var1 = ""
@@ -135,11 +143,11 @@ class PrepareData:
                 temp_brand_list.append(var2)
 
         sorted_brands = list(set(temp_brand_list))
-        print(sorted_brands)
 
+        """print(sorted_brands)"""
 
             # eliminating similar names (" U" et "U", "eco+" et "E.C.O+, "Carrefour bio" et "Carrefour Bio")
-
+            # utiliser strip et lower case
 
 
 

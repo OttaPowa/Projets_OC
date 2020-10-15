@@ -46,10 +46,9 @@ class ManageDb:
                             url varchar(300) DEFAULT NULL,
                             picture_url varchar(300) DEFAULT NULL,
                             nutriscore varchar(20) DEFAULT NULL,
-                            description text DEFAULT NULL,
-                            brand varchar (50) DEFAULT NULL,
-                            stores text DEFAULT NULL,
-                            category_id smallint DEFAULT NULL,
+                            brand varchar (200) DEFAULT NULL,
+                            stores varchar (200) DEFAULT NULL,
+                            category_id int DEFAULT NULL,
                             PRIMARY KEY(id))
                             ENGINE=InnoDB;
 
@@ -71,16 +70,17 @@ class ManageDb:
             pass
 
         cls.connexion.commit()
-        """cls.cursor.close()  # toutes ces instructions plantent !
+        """cls.cursor.close() #si j'active ceci, le curseur ne se rouvre pas pour les prochains appels
         cls.connexion.close()"""
 
         print("La base de données à été crée.")
 
     @classmethod
-    def delete(cls):
+    def delete(cls, name_of_table):
         """
             delete database, table, line or column
         """
+        cls.cursor.execute(f"DROP TABLE {name_of_table}")
 
     @classmethod
     def show_tables(cls):
@@ -89,31 +89,30 @@ class ManageDb:
 
         """
 
-        cls.cursor.execute("show tables")
-
+        cls.cursor.execute("SHOW TABLES")
         for x in cls.cursor:
             print(x)
 
     @classmethod
-    def select(cls):
+    def select(cls, name_of_table):
         """
             select function in SQL
         """
         x = "*"
-        print(cls.cursor.execute(f"select {x} from category")) # ne marche pas
 
+        cls.cursor.execute(f"SELECT {x} FROM {name_of_table}")
+        for x in cls.cursor: # affiche les tuples les uns sous les autres
+            print(x)
+
+        """rows = cls.cursor.fetchall()# affiche les tuples les uns après les autres
+                print(rows)"""
 
     @classmethod
-    def fill(cls):
+    def fill(cls, insert_statement, list_of_items):
         """
             fill the database with the transformed API data
         """
 
-        SQL = "INSERT INTO category (name, url) VALUES (%s, %s)"
-
-        for i in PrepareData.instantiated_categories:
-            print(f'insertion de {i.name} dans la base de données')
-            cls.cursor.execute(SQL, (i.name, i.url))
+        for item in list_of_items:
+            cls.cursor.execute(insert_statement, (item.name, item.url)) # trouver comment remplavcer .name et.url, en argument ca ne focntionne pas.
         cls.connexion.commit()
-
-        # tout bon ca focntionne il faut remplir les produits maintenat et voir comment gérér les brands et les stores avec clé etrangères et containtes

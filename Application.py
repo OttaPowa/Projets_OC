@@ -1,5 +1,8 @@
 # -*-coding:UTF-8-*
+
 from ManageDb import*
+from DbCreationData import*
+from PrepareData import*
 
 
 def main():
@@ -10,11 +13,10 @@ def main():
     PrepareData.instantiate_products()
     PrepareData.get_and_instantiate_brands_and_stores()
 
-    """# build and fill de data base
+    # build and fill de data base
     ManageDb.build()
-    ManageDb.show_tables()
-    ManageDb.fill()
-    ManageDb.select()"""
+    ManageDb.fill(INSERT_SQL, PrepareData.instantiated_categories)
+    ManageDb.select(NAMES_OF_TABLES[0])
 
 
 
