@@ -2,6 +2,7 @@
 
 import mysql.connector
 from PrepareData import PrepareData
+from constants import*
 
 
 class ManageDb:
@@ -101,6 +102,7 @@ class ManageDb:
         x = "*"
 
         cls.cursor.execute(f"SELECT {x} FROM {name_of_table}")
+
         for x in cls.cursor: # affiche les tuples les uns sous les autres
             print(x)
 
