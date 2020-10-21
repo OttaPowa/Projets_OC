@@ -46,9 +46,9 @@ class ManageDb:
                             name varchar(200) DEFAULT NULL,
                             url varchar(300) DEFAULT NULL,
                             picture_url varchar(300) DEFAULT NULL,
-                            nutriscore varchar(20) DEFAULT NULL,
-                            brand varchar (200) DEFAULT NULL,
-                            stores varchar (200) DEFAULT NULL,
+                            nutriscore varchar(5) DEFAULT NULL,
+                            brand_id int DEFAULT NULL,
+                            store_id int DEFAULT NULL,
                             category_id int DEFAULT NULL,
                             PRIMARY KEY(id))
                             ENGINE=InnoDB;
@@ -56,14 +56,12 @@ class ManageDb:
                         CREATE TABLE store (
                             id int NOT NULL AUTO_INCREMENT,
                             name varchar(200) DEFAULT NULL,
-                            url varchar(300) DEFAULT NULL,
                             PRIMARY KEY(id))
                             ENGINE=InnoDB;
 
                         CREATE TABLE brand (
                             id int NOT NULL AUTO_INCREMENT,
                             name varchar(200) DEFAULT NULL,
-                            url varchar(300) DEFAULT NULL,
                             PRIMARY KEY(id))
                             ENGINE=InnoDB;"""
 
@@ -89,32 +87,43 @@ class ManageDb:
         update the database data...
 
         """
-
         cls.cursor.execute("SHOW TABLES")
-        for x in cls.cursor:
-            print(x)
+        for lines in cls.cursor:
+            print(lines)
 
     @classmethod
-    def select(cls, name_of_table):
+    def select(cls, what_to_select, name_of_table):
         """
             select function in SQL
         """
         x = "*"
 
-        cls.cursor.execute(f"SELECT {x} FROM {name_of_table}")
+        cls.cursor.execute(f"SELECT {what_to_select} FROM {name_of_table}")
 
-        for x in cls.cursor: # affiche les tuples les uns sous les autres
-            print(x)
+        for lines in cls.cursor: # affiche les tuples les uns sous les autres
+            print(lines)
 
         """rows = cls.cursor.fetchall()# affiche les tuples les uns après les autres
-                print(rows)"""
+                print(rows) moins lisible je trouve"""
 
     @classmethod
     def fill(cls, insert_statement, list_of_items):
         """
             fill the database with the transformed API data
         """
-
         for item in list_of_items:
-            cls.cursor.execute(insert_statement, (item.name, item.url)) # trouver comment remplavcer .name et.url, en argument ca ne focntionne pas.
+            try:
+                cls.cursor.execute(insert_statement, (item.name, item.url))
+            except AttributeError:
+                cls.cursor.execute(insert_statement, (item.name,))
+        cls.connexion.commit()
+
+    @classmethod
+    def fill2(cls, insert_statement, list_of_items):
+        """
+            fill the database with the transformed API data
+        """
+        for item in list_of_items:
+
+            cls.cursor.execute(insert_statement, (item.name,))
         cls.connexion.commit()

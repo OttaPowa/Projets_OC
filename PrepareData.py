@@ -2,7 +2,8 @@
 
 import json
 import requests
-from DbClasses import Category, Product, Brand
+from DbClasses import Category, Product, Brand, Store
+from constants import*
 
 
 class PrepareData:
@@ -14,11 +15,13 @@ class PrepareData:
     instantiated_products = []
 
     instantiated_brands = []
+    instantiated_stores = []
 
+    sorted_items = []
 
 
     @classmethod
-    def get_and_clean_categories(cls):
+    def get_categories(cls):
         """
             get the data by the API
         """
@@ -56,7 +59,7 @@ class PrepareData:
             cls.instantiated_categories.append(my_data)
 
     @classmethod
-    def get_and_clean_products(cls):
+    def get_and_verify_products_integrity(cls):
         """
             get the products by the API and clean the obtained data
         """
@@ -68,9 +71,7 @@ class PrepareData:
 
         for cat in cls.instantiated_categories:
             temp_prod = []  # temporary list of product for the current category
-
             https = cls.instantiated_categories[position_in_cat_list].url
-
             request = requests.get(f'{https}.json/{page_nbr}')
             result = request.json()
 
@@ -93,7 +94,6 @@ class PrepareData:
         print(f'\n{del_el} produits ont été ignorés car une clé était manquante\n')
 
         for i in cls.all_products:
-
             print(f'{len(i)} produits ont été récupérés dans la catégorie {cls.instantiated_categories[x].name}')
             x += 1
 
@@ -104,8 +104,6 @@ class PrepareData:
         for my_list in cls.all_products:
             for my_product in my_list:
                 # instantiate only the products that contains all the needed data
-                """for elem in range(len(my_product)):
-                    if my_product[elem] == "":"""
                 if my_product[0] == "" or my_product[1] == "" or my_product[2] == "" or my_product[3] == "" or \
                         my_product[4] == "" or my_product[5] == "":
                     empty_slot += 1
@@ -127,58 +125,74 @@ class PrepareData:
 
 
     @classmethod
-    def get_and_clean_brands_and_stores(cls):
+    def get_and_clean_additional_data(cls, items):
 
         """
              get and sort the brands and the stores, eliminating multiple occurencies and similar names
         """
-        # cette methode doit pouvoir s'appliquer aussi aux stores (juste a remplacer le .brand par .store dans le split mais n'y arrive pas)
-        # essayé en remplcant cls.instaiated product par un génrique et en mettant instatiated product.brand en argument de l'application mais ne ocntionne pas car ne cible par l'argument mais la liste d'objet
-        # autre piste: mettre lower et strip sur tout les elements avant d'instancier.
 
-        temp_brand_list = []
-        split_brand1 = ""
-        split_brand2 = ""
-        lowercase_brands = []
-        stripped_brands = []
-        cleaned_brands = []
+        temp_item_list = []
+        split_item1 = ""
+        split_item2 = ""
+        lowercase_items = []
+        stripped_items = []
+        cleaned_items = []
 
-        for brand in cls.instantiated_products:
-            # break tuples of brands and put them in a unique list of brands
-            print(brand.name, brand.store)
+        for item in items:
+            # break tuples and put them in a unique list
+
             try:
-                split_brand1, split_brand2 = brand.brand.split(",")
+                split_item1, split_item2 = item.split(",")
             except ValueError:
                 pass
-                temp_brand_list.append(split_brand1)
-                temp_brand_list.append(split_brand2)
+                temp_item_list.append(split_item1)
+                temp_item_list.append(split_item2)
 
-        for brand in temp_brand_list:
-            # eliminate empty brands and makes all lowercase
-            if brand != "":
-                lowercase_brands.append(brand.lower())
+        for item in temp_item_list:
+            # ignore empty items and lowercase it
+            if item != "":
+                lowercase_items.append(item.lower())
 
-        for brand in lowercase_brands:
-            # strip all brands of leading and trailing withe space
-            stripped_brands.append(brand.strip())
+        for item in lowercase_items:
+            # strip all items of leading and trailing withe space
+            stripped_items.append(item.strip())
 
-        for brand in stripped_brands:
-            # replace . with no withe space
-            cleaned_brands.append(brand.replace(".", ""))
+        for item in stripped_items:
+            # replace "." with no withe space
+            cleaned_items.append(item.replace(".", ""))
 
         # eliminate similar names
-        sorted_brands = list(set(cleaned_brands))
+        sorted_items = list(set(cleaned_items))
+        cls.sorted_items = sorted_items
+        """print(sorted_items)"""
 
-        print(sorted_brands)
+    @classmethod
+    def instantiate_stores(cls):
 
-        MY_PRODUCTS_BRANDS = [brand.name for brand in cls.instantiated_products]
+        for item in cls.sorted_items:
+            my_item = Store(item)
 
-        print(MY_PRODUCTS_BRANDS)
+            cls.instantiated_stores.append(my_item)
 
-        # instantiate the brands
-        for brand in sorted_brands:
-            my_brand = Brand(brand[0])
-            cls.instantiated_brands.append(my_brand)
+    #deux methodes aui font la meme chose mais je n'ai pas réussi a stoquer les noms dans une variable pour les selectionner ensuite car chaine de caractère
+
+    @classmethod
+    def instantiate_brands(cls):
+
+        for item in cls.sorted_items:
+            my_item = Brand(item)
+
+            cls.instantiated_brands.append(my_item)
+
+        for i in cls.instantiated_stores:
+            print(i.name)
+        print(len(cls.instantiated_stores))
+        for i in cls.instantiated_brands:
+            print(i.name)
+        print(len(cls.instantiated_brands))
+
+
+
 
 
 
