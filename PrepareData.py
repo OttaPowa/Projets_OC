@@ -7,18 +7,10 @@ from constants import*
 
 
 class PrepareData:
-
-    instantiated_categories = []
     cleaned_categories = []
-
-    all_products = []
-    instantiated_products = []
-
-    instantiated_brands = []
-    instantiated_stores = []
+    cleaned_products = []
 
     sorted_items = []
-
 
     @classmethod
     def get_categories(cls):
@@ -46,20 +38,7 @@ class PrepareData:
         print(f'\n{len(cls.cleaned_categories)} catégories ont été récupérées après triage')
 
     @classmethod
-    def instantiate_categories(cls):
-        """
-            instantiate the categories into the class Category
-        """
-
-        for data in cls.cleaned_categories:
-            # create object instance
-            my_data = Category(
-                data[0],
-                data[1])
-            cls.instantiated_categories.append(my_data)
-
-    @classmethod
-    def get_and_verify_products_integrity(cls):
+    def get_and_sort_products(cls):
         """
             get the products by the API and clean the obtained data
         """
@@ -68,10 +47,12 @@ class PrepareData:
         page_nbr = 1    # counter to go forward in the pages of the products
         del_el = 0    # elements ignored because of a missing key corresponding to a needed data
         x = 0    # counter to display the final number of products contained in each categorie
+        uncleaned_products = []
+        empty_slot = 0
 
-        for cat in cls.instantiated_categories:
+        for cat in DbClasses.Category.instantiated_categories:
             temp_prod = []  # temporary list of product for the current category
-            https = cls.instantiated_categories[position_in_cat_list].url
+            https = DbClasses.Category.instantiated_categories[position_in_cat_list].url
             request = requests.get(f'{https}.json/{page_nbr}')
             result = request.json()
 
@@ -88,20 +69,16 @@ class PrepareData:
             else:
                 page_nbr = 1
 
-            cls.all_products.append(temp_prod)
+            uncleaned_products.append(temp_prod)
             position_in_cat_list += 1
 
         print(f'\n{del_el} produits ont été ignorés car une clé était manquante\n')
 
-        for i in cls.all_products:
-            print(f'{len(i)} produits ont été récupérés dans la catégorie {cls.instantiated_categories[x].name}')
+        for i in uncleaned_products:
+            print(f'{len(i)} produits ont été récupérés dans la catégorie {DbClasses.Category.instantiated_categories[x].name}')
             x += 1
 
-    @classmethod
-    def instantiate_products(cls):
-        empty_slot = 0
-
-        for my_list in cls.all_products:
+        for my_list in uncleaned_products:
             for my_product in my_list:
                 # instantiate only the products that contains all the needed data
                 if my_product[0] == "" or my_product[1] == "" or my_product[2] == "" or my_product[3] == "" or \
@@ -109,20 +86,32 @@ class PrepareData:
                     empty_slot += 1
                     pass
                 else:
-                    # create object instance
+                    cls.cleaned_products.append(my_product)
 
-                    my_data = Product(
-                        my_product[0],
-                        my_product[1],
-                        my_product[2],
-                        my_product[3],
-                        my_product[4],
-                        my_product[5])
-
-                    cls.instantiated_products.append(my_data)
         print(f"\n{empty_slot} produits ont été ignorés car certaines données étaient manquantes\n")
 
+    @classmethod
+    def calibrate(cls, list_of_data):
 
+        """
+             get and sort the brands and the stores, eliminating multiple occurencies and similar names
+        """
+        lowercase_items = []
+        stripped_items = []
+        cleaned_items = []
+
+        print(list_of_data)
+        # REVOIR LA MANIERE / CELA FAIT UNE LISTE ET NON UNE LISTE DE TUPLES VOIR COMMENT GERER LE LOWER OU REFORMER LES TUPLES APRES TRAITEMENT
+        for tupl in list_of_data:
+            for item in tupl:
+                lowercase_items.append(item.lower())
+
+        for item in lowercase_items:
+            # strip all items of leading and trailing withe space
+            stripped_items.append(item.strip())
+
+        list_of_data = stripped_items
+        print(list_of_data)
 
     @classmethod
     def get_and_clean_additional_data(cls, items):
@@ -130,7 +119,6 @@ class PrepareData:
         """
              get and sort the brands and the stores, eliminating multiple occurencies and similar names
         """
-
         temp_item_list = []
         split_item1 = ""
         split_item2 = ""
@@ -138,7 +126,7 @@ class PrepareData:
         stripped_items = []
         cleaned_items = []
 
-        for item in items:
+        """for item in items: UTILSE POUR BARND ET STORE
             # break tuples and put them in a unique list
 
             try:
@@ -146,7 +134,8 @@ class PrepareData:
             except ValueError:
                 pass
                 temp_item_list.append(split_item1)
-                temp_item_list.append(split_item2)
+                temp_item_list.append(split_item2)"""
+
 
         for item in temp_item_list:
             # ignore empty items and lowercase it
@@ -158,38 +147,23 @@ class PrepareData:
             stripped_items.append(item.strip())
 
         for item in stripped_items:
-            # replace "." with no withe space
+            # replace "." with no white space
             cleaned_items.append(item.replace(".", ""))
 
-        # eliminate similar names
+
+        """"# eliminate similar names UTILSE POUR BARND ET STORE
         sorted_items = list(set(cleaned_items))
-        cls.sorted_items = sorted_items
+        cls.sorted_items = sorted_items"""
         """print(sorted_items)"""
 
     @classmethod
-    def instantiate_stores(cls):
+    def instantiate(cls, class_name, list_to_instantiate):
 
-        for item in cls.sorted_items:
-            my_item = Store(item)
+        for item in list_to_instantiate:
+            my_item = class_name(item)
+        print(list_to_instantiate)
+        print(DbClasses.Category.instantiated_categories[3].name)
 
-            cls.instantiated_stores.append(my_item)
-
-    #deux methodes aui font la meme chose mais je n'ai pas réussi a stoquer les noms dans une variable pour les selectionner ensuite car chaine de caractère
-
-    @classmethod
-    def instantiate_brands(cls):
-
-        for item in cls.sorted_items:
-            my_item = Brand(item)
-
-            cls.instantiated_brands.append(my_item)
-
-        for i in cls.instantiated_stores:
-            print(i.name)
-        print(len(cls.instantiated_stores))
-        for i in cls.instantiated_brands:
-            print(i.name)
-        print(len(cls.instantiated_brands))
 
 
 

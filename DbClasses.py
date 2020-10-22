@@ -2,10 +2,10 @@
 
 
 class Category:
+    instantiated_categories = []
 
     def __init__(self,
-                 name="",
-                 url=""):
+                 args):
         """
             Constructor
             :param arg1: name of the category
@@ -14,19 +14,17 @@ class Category:
             :type arg2: string
         """
 
-        self.name = name
-        self.url = url
+        self.name = args[0]
+        self.url = args[1]
+        self.instantiated_categories.append(self)
+
 
 
 class Product:
+    instantiated_products = []
+
     def __init__(self,
-                 name="",
-                 url="",
-                 picture_url="",
-                 brand="",
-                 store="",
-                 nutriscore="",
-                 category= ""):
+                 args):
         """
             Constructor
             :param arg1: name of the product
@@ -45,30 +43,40 @@ class Product:
             :type arg7: string
         """
 
-        self.name = name
-        self.url = url
-        self.picture_url = picture_url
-        self.brand = brand
-        self.store = store
-        self.nutriscore = nutriscore
-        self.category = category
+        self.name = args[0]
+        self.url = args[1]
+        self.picture_url = args[2]
+        self.brand = args[3]
+        self.store = args[4]
+        self.nutriscore = args[5]
+        self.category = args[6]
+        self.instantiated_products.append(self)
 
 
 class Brand:
+    instantiated_brands = []
+
     def __init__(self,
-                 name=""):
+                 args):
         """
             Constructor
             :param arg1: name of the product
             :type arg1: string
         """
 
-        self.name = name
+        self.name = args[0]
+        self.instantiated_brands.append(self)
 
 
 class Store(Brand):
-    """
-        child class of Category
-    """
+    instantiated_stores = []
+
+    def __init__(self, args):
+
+        """
+            child class of Category
+        """
+        Brand.__init__(self, args)
+        self.instantiated_stores.append(self)
 
 

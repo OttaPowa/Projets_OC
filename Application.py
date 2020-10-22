@@ -3,6 +3,7 @@
 from ManageDb import*
 from constants import*
 from PrepareData import*
+from DbClasses import*
 
 
 
@@ -11,26 +12,28 @@ def main():
 
     # get and clean the data
     PrepareData.get_categories()
-    PrepareData.instantiate_categories()
-    PrepareData.get_and_verify_products_integrity()
-    PrepareData.instantiate_products()
+    PrepareData.instantiate(DICT_OF_CLASSES["Category"], PrepareData.cleaned_categories)
+    PrepareData.get_and_sort_products()
+    PrepareData.calibrate(PrepareData.cleaned_products)
+    PrepareData.instantiate(DICT_OF_CLASSES["Product"], PrepareData.cleaned_products)
 
-    STORES = [store.store for store in PrepareData.instantiated_products]
-    BRANDS = [brand.brand for brand in PrepareData.instantiated_products]
+    """STORES = [store.store for store in DbClasses.Product.instantiated_products]
+    BRANDS = [brand.brand for brand in DbClasses.Product.instantiated_products]
 
-    PrepareData.get_and_clean_additional_data(STORES)
-    PrepareData.instantiate_stores()
-    PrepareData.get_and_clean_additional_data(BRANDS)
+    PrepareData.get_and_clean_additional_data(STORES)"""
+
+
+    """PrepareData.get_and_clean_additional_data(BRANDS)
     PrepareData.instantiate_brands()
 
     # build and fill de data base
     ManageDb.build()
-    ManageDb.fill(INSERT_CATS, PrepareData.instantiated_categories)
+    ManageDb.fill(INSERT_CATS, DbClasses.Category.instantiated_categories)
     ManageDb.select(SQL_ARGS, NAME_OF_TABLE[0])
-    ManageDb.fill(INSERT_STORES, PrepareData.instantiated_stores)
+    ManageDb.fill(INSERT_STORES, DbClasses.Store.instantiated_stores)
     ManageDb.select(SQL_ARGS, NAME_OF_TABLE[2])
-    ManageDb.fill(INSERT_BRANDS, PrepareData.instantiated_brands)
-    ManageDb.select(SQL_ARGS, NAME_OF_TABLE[3])
+    ManageDb.fill(INSERT_BRANDS, DbClasses.Brand.instantiated_brands)
+    ManageDb.select(SQL_ARGS, NAME_OF_TABLE[3])"""
 
 
 
