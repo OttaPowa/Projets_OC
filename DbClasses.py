@@ -49,7 +49,6 @@ class Product:
         self.brand = args[3]
         self.store = args[4]
         self.nutriscore = args[5]
-        self.category = args[6]
         self.instantiated_products.append(self)
 
 

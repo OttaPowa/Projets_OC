@@ -14,13 +14,18 @@ def main():
     PrepareData.get_categories()
     PrepareData.instantiate(DICT_OF_CLASSES["Category"], PrepareData.cleaned_categories)
     PrepareData.get_and_sort_products()
-    PrepareData.calibrate(PrepareData.cleaned_products)
+    PrepareData.calibrate(PrepareData.raw_products)
     PrepareData.instantiate(DICT_OF_CLASSES["Product"], PrepareData.cleaned_products)
 
-    """STORES = [store.store for store in DbClasses.Product.instantiated_products]
+    STORES = [store.store for store in DbClasses.Product.instantiated_products]
     BRANDS = [brand.brand for brand in DbClasses.Product.instantiated_products]
 
-    PrepareData.get_and_clean_additional_data(STORES)"""
+    PrepareData.get_stores_or_brands(STORES)
+    PrepareData.instantiate(DICT_OF_CLASSES["Store"], PrepareData.setted_items)
+    print(DbClasses.Store.instantiated_stores[8].name)
+    PrepareData.get_stores_or_brands(BRANDS)
+    PrepareData.instantiate(DICT_OF_CLASSES["Brand"], PrepareData.setted_items)
+    print(DbClasses.Brand.instantiated_brands[18].name)
 
 
     """PrepareData.get_and_clean_additional_data(BRANDS)
