@@ -2,7 +2,7 @@
 
 import json
 import requests
-from DbClasses import Category, Product, Brand, Store
+import Category
 from constants import*
 
 
@@ -10,7 +10,6 @@ class PrepareData:
     cleaned_categories = []
     raw_products = []
     cleaned_products = []
-
     setted_items = []
 
     @classmethod
@@ -51,9 +50,9 @@ class PrepareData:
         uncleaned_products = []
         empty_slot = 0
 
-        for cat in DbClasses.Category.instantiated_categories:
+        for cat in Category.Category.instantiated_categories:
             temp_prod = []  # temporary list of product for the current category
-            https = DbClasses.Category.instantiated_categories[position_in_cat_list].url
+            https = Category.Category.instantiated_categories[position_in_cat_list].url
             request = requests.get(f'{https}.json/{page_nbr}')
             result = request.json()
 
@@ -76,7 +75,7 @@ class PrepareData:
         print(f'\n{del_el} produits ont été ignorés car une clé était manquante\n')
 
         for i in uncleaned_products:
-            print(f'{len(i)} produits ont été récupérés dans la catégorie {DbClasses.Category.instantiated_categories[x].name}')
+            print(f'{len(i)} produits ont été récupérés dans la catégorie {Category.Category.instantiated_categories[x].name}')
             x += 1
 
         for my_list in uncleaned_products:
@@ -93,7 +92,6 @@ class PrepareData:
 
     @classmethod
     def calibrate(cls, list_of_data):
-
         """
              get and sort the brands and the stores, eliminating multiple occurencies and similar names
         """
@@ -123,16 +121,18 @@ class PrepareData:
         temp_item_list = []
         split_item1 = ""
         split_item2 = ""
+        cls.setted_items = []
 
         for item in items:
             # break tuples and put them in a unique list
+            # strip strings of right and left white space appeared when breaking tuples
             try:
                 split_item1, split_item2 = item.split(",")
 
             except ValueError:
                 pass
-                temp_item_list.append(split_item1)
-                temp_item_list.append(split_item2)
+                temp_item_list.append(split_item1.strip())
+                temp_item_list.append(split_item2.strip())
 
         # eliminate duplicated names
         setted_items = list(set(temp_item_list))
@@ -140,9 +140,8 @@ class PrepareData:
 
         for i in setted_items:
             # put each item in a list (the instantiation method need a list to work)
-            cls.setted_items.append([i])
 
-        print(cls.setted_items)
+            cls.setted_items.append([i])
 
     @classmethod
     def instantiate(cls, class_name, list_to_instantiate):

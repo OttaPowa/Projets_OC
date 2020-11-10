@@ -34,6 +34,8 @@ class ManageDb:
                         DROP TABLE IF EXISTS product;
                         DROP TABLE IF EXISTS store;
                         DROP TABLE IF EXISTS brand;
+                        DROP TABLE IF EXISTS product_store;
+                        DROP TABLE IF EXISTS product_brand;
                         
                         CREATE TABLE category(
                             id int NOT NULL AUTO_INCREMENT,
@@ -47,8 +49,6 @@ class ManageDb:
                             url varchar(300) DEFAULT NULL,
                             picture_url varchar(300) DEFAULT NULL,
                             nutriscore varchar(5) DEFAULT NULL,
-                            brand_id int DEFAULT NULL,
-                            store_id int DEFAULT NULL,
                             category_id int DEFAULT NULL,
                             PRIMARY KEY(id))
                             ENGINE=InnoDB;
@@ -63,15 +63,23 @@ class ManageDb:
                             id int NOT NULL AUTO_INCREMENT,
                             name varchar(200) DEFAULT NULL,
                             PRIMARY KEY(id))
-                            ENGINE=InnoDB;"""
+                            ENGINE=InnoDB;
+                            
+                        CREATE TABLE product_store (
+                            id_store int DEFAULT NULL,
+                            id_product int DEFAULT NULL)
+                            ENGINE=InnoDB;
+                            
+                        CREATE TABLE product_brand (
+                            id_brand int DEFAULT NULL,
+                            id_product int DEFAULT NULL)
+                            ENGINE=InnoDB; 
+                        """
 
         for result in cls.cursor.execute(DATA_BASE_SQL, multi=True):
             pass
 
         cls.connexion.commit()
-        """cls.cursor.close() #si j'active ceci, le curseur ne se rouvre pas pour les prochains appels
-        cls.connexion.close()"""
-
         print("La base de données à été crée.")
 
     @classmethod
@@ -113,17 +121,36 @@ class ManageDb:
         """
         for item in list_of_items:
             try:
-                cls.cursor.execute(insert_statement, (item.name, item.url))
+                cls.cursor.execute(insert_statement, (item.name, item.url, item.picture_url, item.nutriscore))
             except AttributeError:
-                cls.cursor.execute(insert_statement, (item.name,))
+                try:
+                    cls.cursor.execute(insert_statement, (item.name, item.url))
+
+                except AttributeError:
+                    cls.cursor.execute(insert_statement, (item.name,))
+
         cls.connexion.commit()
 
     @classmethod
-    def fill2(cls, insert_statement, list_of_items):
+    def insert_n_n_test(cls):
         """
-            fill the database with the transformed API data
+            Insertion des données dans la base (n-n)
         """
-        for item in list_of_items:
 
-            cls.cursor.execute(insert_statement, (item.name,))
-        cls.connexion.commit()
+        for product in Product.Product.instantiated_products:
+            print(product.name, product.url, product.picture_url, product.nutriscore)
+
+            cls.cursor.execute(f"INSERT INTO product (name, url, picture_url, nutriscore) VALUES ({product.name}, {product.url}, {product.picture_url}, {product.nutriscore})")
+            print(f"insertion de {product.name} dans la table product")
+
+            MyProductID = cls.cursor.execute(f"SELECT id FROM product WHERE product.name = {product.name}")
+
+            for store in product.store:
+                cls.cursor.execute(f"INSERT INTO store (name) VALUES ({store},)")
+                print(f"insertion de {store} dans la table store")
+
+            MyStoreID = cls.cursor.execute(f"SELECT id FROM store WHERE store.name = {store.name}")
+
+            cls.cursor.execute(f"INSERT INTO product_store (id_product, id_store) VALUES ({MyProductID}, {MyStoreID})")
+
+            # il faut garder les deux variables et les utiliser pour remplir les tables product_store et product_brand
