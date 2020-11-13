@@ -17,7 +17,7 @@ class PrepareData:
         """
             get the data by the API
         """
-
+        cleaned_categories = []
         min_product = 200
         max_product = 210
 
@@ -33,8 +33,9 @@ class PrepareData:
         for categories in result["tags"]:
             if min_product <= categories["products"] <= max_product:
                 print(f'Récupération de la catégorie {categories["name"]}')
-                cls.cleaned_categories.append((categories["name"], categories["url"]))
+                cleaned_categories.append((categories["name"], categories["url"]))
 
+        cls.cleaned_categories = cleaned_categories
         print(f'\n{len(cls.cleaned_categories)} catégories ont été récupérées après triage')
 
     @classmethod
@@ -90,6 +91,7 @@ class PrepareData:
 
         print(f"\n{empty_slot} produits ont été ignorés car certaines données étaient manquantes\n")
 
+
     @classmethod
     def calibrate(cls, list_of_data):
         """
@@ -106,11 +108,15 @@ class PrepareData:
         dot_replaced_items = [(arg1.replace(".", ""), arg2, arg3, arg4.replace(".", ""), arg5.replace(".", ""),
                                arg6.replace(".", "")) for arg1, arg2, arg3, arg4, arg5, arg6 in stripped_items]
 
-        for i in dot_replaced_items:
+        slip_quotation_marks = [(arg1.replace("'", "''"), arg2, arg3, arg4.replace("'", "''"), arg5.replace("'", "''"),
+                                 arg6.replace("'", "''")) for arg1, arg2, arg3, arg4, arg5, arg6 in dot_replaced_items]
+
+        for i in slip_quotation_marks:
             if i != " ":
                 temp_list.append(i)
 
         cls.cleaned_products = temp_list
+
 
     @classmethod
     def get_stores_or_brands(cls, items):
@@ -121,18 +127,31 @@ class PrepareData:
         temp_item_list = []
         split_item1 = ""
         split_item2 = ""
+        split_item3 = ""
+        split_item4 = ""
         cls.setted_items = []
 
         for item in items:
             # break tuples and put them in a unique list
-            # strip strings of right and left white space appeared when breaking tuples
             try:
-                split_item1, split_item2 = item.split(",")
-
+                split_item1, split_item2, split_items3, split_items_4 = item.split(",")
             except ValueError:
-                pass
+                try:
+                    split_item1, split_item2, split_item3 = item.split(",")
+                except ValueError:
+                    try:
+                        split_item1, split_item2 = item.split(",")
+                    except ValueError:
+                        temp_item_list.append(item.strip())
+                    temp_item_list.append(split_item1.strip())
+                    temp_item_list.append(split_item2.strip())
                 temp_item_list.append(split_item1.strip())
                 temp_item_list.append(split_item2.strip())
+                temp_item_list.append(split_item3.strip())
+            temp_item_list.append(split_item1.strip())
+            temp_item_list.append(split_item2.strip())
+            temp_item_list.append(split_item3.strip())
+            temp_item_list.append(split_item4.strip())
 
         # eliminate duplicated names
         setted_items = list(set(temp_item_list))
@@ -140,7 +159,6 @@ class PrepareData:
 
         for i in setted_items:
             # put each item in a list (the instantiation method need a list to work)
-
             cls.setted_items.append([i])
 
     @classmethod

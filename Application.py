@@ -22,7 +22,6 @@ def main():
 
     STORES = [store.store for store in Product.instantiated_products]
     BRANDS = [brand.brand for brand in Product.instantiated_products]
-
     PrepareData.get_stores_or_brands(STORES)
     PrepareData.instantiate(DICT_OF_CLASSES["Store"], PrepareData.setted_items)
     PrepareData.get_stores_or_brands(BRANDS)
@@ -38,10 +37,8 @@ def main():
     ManageDb.select(SQL_ARGS, NAME_OF_TABLE[3])
     ManageDb.fill(INSERT_PRODUCTS, Product.instantiated_products)
     ManageDb.select(SQL_ARGS, NAME_OF_TABLE[1])
-    ManageDb.select(COLUMN[0], NAME_OF_TABLE[1])
-    ManageDb.select(COLUMN[1], NAME_OF_TABLE[0])
     ManageDb.insert_n_n_test() # methode en test
-    """ManageDb.select(SQL_ARGS, NAME_OF_TABLE[4])"""
+    ManageDb.select(SQL_ARGS, NAME_OF_TABLE[4])
 
 
 

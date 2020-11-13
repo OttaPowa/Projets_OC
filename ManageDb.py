@@ -66,13 +66,13 @@ class ManageDb:
                             ENGINE=InnoDB;
                             
                         CREATE TABLE product_store (
-                            id_store int DEFAULT NULL,
-                            id_product int DEFAULT NULL)
+                            id_product int DEFAULT NULL,
+                            id_store int DEFAULT NULL)
                             ENGINE=InnoDB;
                             
                         CREATE TABLE product_brand (
-                            id_brand int DEFAULT NULL,
-                            id_product int DEFAULT NULL)
+                            id_product int DEFAULT NULL,
+                            id_brand int DEFAULT NULL)
                             ENGINE=InnoDB; 
                         """
 
@@ -139,13 +139,51 @@ class ManageDb:
         My_list= ["id", "product", "store", "name"]
 
         for product in Product.Product.instantiated_products:
-            print(product.name)
-            # name dans la table semble être un tuple mais cel est peut etre simplement une question d'affichage, le problème peut venir des chiane '' pour la table et "" pour la liste?
-            MyProductID = cls.cursor.execute(f"SELECT {My_list[0]} FROM {My_list[1]} WHERE {My_list[3]} = {product.name}")
-            print(product.name)
+            my_product_id = tuple
+            my_store_id = tuple
 
-            MyStoreID = cls.cursor.execute(f"SELECT {My_list[0]} FROM {My_list[2]} WHERE {My_list[3]} = {product.store}")
-            print(product.store)
+            # fonctionnel, il faut a présent gérer le tuple de store dans le comparatif de select (on compare un nom a un tuple de nom alors qu'on veux le comparer au premier puis au second
 
-            cls.cursor.execute(f"INSERT INTO product_store (id_product, id_store) VALUES ({MyProductID}, {MyStoreID})")
+            query_product_id = f'SELECT {My_list[0]} FROM {My_list[1]} WHERE {My_list[3]} = "{product.name}"'
+            print(query_product_id)
+            cls.cursor.execute(query_product_id)
+            for row in cls.cursor:
+                my_product_id = row
+                print(my_product_id)
+
+
+            list_of_splited_stores = product.store.split(",")
+            first_store = []
+            second_store = []
+
+            try:
+                second_store = list_of_splited_stores[1].strip()
+                first_store = list_of_splited_stores[0].strip()
+            except IndexError:
+                first_store = list_of_splited_stores[0].strip()
+
+            query_store_id1 = f'SELECT {My_list[0]} FROM {My_list[2]} WHERE {My_list[3]} = "{first_store}"'
+            print(query_store_id1)
+            cls.cursor.execute(query_store_id1)
+
+            for line in cls.cursor: #this methode get a tuple instead of a list of tuples with fetch.
+                my_store_id = line
+                print(my_store_id)
+
+            if second_store != []:
+                query_store_id2 = f'SELECT {My_list[0]} FROM {My_list[2]} WHERE {My_list[3]} = "{second_store}"'
+                print(query_store_id2)
+                cls.cursor.execute(query_store_id2)
+                for line in cls.cursor:  # this methode get a tuple instead of a list of tuples with fetch.
+                    my_store_id1 = line
+                    print(my_store_id1)
+
+            query_insert = f"INSERT INTO product_store (id_product, id_store) VALUES (%s, %s)"
+            cls.cursor.execute(query_insert, (my_product_id[0], my_store_id[0]))
+            # the result of the select is a lone tuples, so i select just the data not the tuple.
+
+
+
+
+
 
