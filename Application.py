@@ -22,11 +22,16 @@ def main():
 
     STORES = [store.store for store in Product.instantiated_products]
     BRANDS = [brand.brand for brand in Product.instantiated_products]
-    PrepareData.get_stores_or_brands(STORES)
-    PrepareData.instantiate(DICT_OF_CLASSES["Store"], PrepareData.setted_items)
-    PrepareData.get_stores_or_brands(BRANDS)
-    PrepareData.instantiate(DICT_OF_CLASSES["Brand"], PrepareData.setted_items)
+    CATEGORIES = [categories.categories for categories in Product.instantiated_products]
 
+    PrepareData.get_and_set(STORES)
+    PrepareData.instantiate(DICT_OF_CLASSES["Store"], PrepareData.setted_items)
+    PrepareData.get_and_set(BRANDS)
+    PrepareData.instantiate(DICT_OF_CLASSES["Brand"], PrepareData.setted_items)
+    PrepareData.get_and_set(CATEGORIES)
+    """PrepareData.instantiate(DICT_OF_CLASSES["Category"], PrepareData.setted_items)"""
+    #  pas d'url de catégorie dans la deuxieme instanciation
+    """
     # build and fill de data base
     ManageDb.build()
     ManageDb.fill(INSERT_CATS, Category.instantiated_categories)
@@ -43,7 +48,7 @@ def main():
     ManageDb.insert_n_n_test(Product.instantiated_products, NAME_OF_TABLE[1], NAME_OF_TABLE[3],
                              NAME_OF_TABLE[5], COLUMN[8], COLUMN[7])  # method en test
     ManageDb.select(SQL_ARGS, NAME_OF_TABLE[5])
-
+    """
 
 
 
