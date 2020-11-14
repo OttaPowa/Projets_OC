@@ -111,7 +111,8 @@ class ManageDb:
             print(lines)
 
         """rows = cls.cursor.fetchall()# affiche les tuples les uns après les autres
-                print(rows) moins lisible je trouve"""
+                print(rows) moins lisible je trouve , de plus fetchall renvoie une liste 
+                de tuple alors que cette methode seulemnt un tuple"""
 
     @classmethod
     def fill(cls, insert_statement, list_of_items):
@@ -132,25 +133,22 @@ class ManageDb:
         cls.connexion.commit()
 
     @classmethod
-    def insert_n_n_test(cls):
+    def insert_n_n_test(cls, instantiated_list, name_of_table1, name_of_table2, name_of_table3, column1, column2):
         """
             Insertion des données dans la base (n-n)
         """
-        My_list= ["id", "product", "store", "name"]
+        my_list = ["id", "product", "store", "name", "product_store", "product_brand", "id_product", "id_store"]
 
-        for product in Product.Product.instantiated_products:
+        for product in instantiated_list:
             my_product_id = tuple
             my_store_id = tuple
 
-            # fonctionnel, il faut a présent gérer le tuple de store dans le comparatif de select (on compare un nom a un tuple de nom alors qu'on veux le comparer au premier puis au second
-
-            query_product_id = f'SELECT {My_list[0]} FROM {My_list[1]} WHERE {My_list[3]} = "{product.name}"'
+            query_product_id = f'SELECT id FROM {name_of_table1} WHERE name = "{product.name}"'
             print(query_product_id)
             cls.cursor.execute(query_product_id)
             for row in cls.cursor:
                 my_product_id = row
                 print(my_product_id)
-
 
             list_of_splited_stores = product.store.split(",")
             first_store = []
@@ -162,23 +160,23 @@ class ManageDb:
             except IndexError:
                 first_store = list_of_splited_stores[0].strip()
 
-            query_store_id1 = f'SELECT {My_list[0]} FROM {My_list[2]} WHERE {My_list[3]} = "{first_store}"'
+            query_store_id1 = f'SELECT id FROM {name_of_table2} WHERE name = "{first_store}"'
             print(query_store_id1)
             cls.cursor.execute(query_store_id1)
 
-            for line in cls.cursor: #this methode get a tuple instead of a list of tuples with fetch.
+            for line in cls.cursor:  # this method get a tuple instead of a list of tuples with fetch.
                 my_store_id = line
                 print(my_store_id)
 
             if second_store != []:
-                query_store_id2 = f'SELECT {My_list[0]} FROM {My_list[2]} WHERE {My_list[3]} = "{second_store}"'
+                query_store_id2 = f'SELECT id FROM {name_of_table2} WHERE name = "{second_store}"'
                 print(query_store_id2)
                 cls.cursor.execute(query_store_id2)
-                for line in cls.cursor:  # this methode get a tuple instead of a list of tuples with fetch.
+                for line in cls.cursor:  # this method get a tuple instead of a list of tuples with fetch.
                     my_store_id1 = line
                     print(my_store_id1)
 
-            query_insert = f"INSERT INTO product_store (id_product, id_store) VALUES (%s, %s)"
+            query_insert = f"INSERT INTO {name_of_table3} ({column1}, {column2}) VALUES (%s, %s)"
             cls.cursor.execute(query_insert, (my_product_id[0], my_store_id[0]))
             # the result of the select is a lone tuples, so i select just the data not the tuple.
 

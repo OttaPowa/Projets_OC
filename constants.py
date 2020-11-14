@@ -6,7 +6,7 @@ import Brand
 import Store
 
 NAME_OF_TABLE = ["category", "product", "store", "brand", "product_store", "product_brand"]
-COLUMN = ["name", "url", "picture_url", "nutriscore"]
+COLUMN = ["name", "url", "picture_url", "nutriscore", "id", "id_category", "id_store", "id_brand", "id_product"]
 SQL_ARGS = "*"
 
 INSERT_CATS = f"INSERT INTO {NAME_OF_TABLE[0]} ({COLUMN[0]}, {COLUMN[1]}) VALUES (%s, %s)"

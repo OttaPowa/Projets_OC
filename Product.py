@@ -29,3 +29,5 @@ class Product:
         self.store = args[4]
         self.nutriscore = args[5]
         self.instantiated_products.append(self)
+
+# ajouter un arg6 avec les categories (verifier les implications dans le code d'un nouvel argument ajouté au constucter

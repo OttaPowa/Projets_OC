@@ -37,9 +37,12 @@ def main():
     ManageDb.select(SQL_ARGS, NAME_OF_TABLE[3])
     ManageDb.fill(INSERT_PRODUCTS, Product.instantiated_products)
     ManageDb.select(SQL_ARGS, NAME_OF_TABLE[1])
-    ManageDb.insert_n_n_test() # methode en test
+    ManageDb.insert_n_n_test(Product.instantiated_products, NAME_OF_TABLE[1], NAME_OF_TABLE[2],
+                             NAME_OF_TABLE[4], COLUMN[8], COLUMN[6])
     ManageDb.select(SQL_ARGS, NAME_OF_TABLE[4])
-
+    ManageDb.insert_n_n_test(Product.instantiated_products, NAME_OF_TABLE[1], NAME_OF_TABLE[3],
+                             NAME_OF_TABLE[5], COLUMN[8], COLUMN[7])  # method en test
+    ManageDb.select(SQL_ARGS, NAME_OF_TABLE[5])
 
 
 
