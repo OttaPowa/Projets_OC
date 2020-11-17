@@ -36,6 +36,7 @@ class ManageDb:
                         DROP TABLE IF EXISTS brand;
                         DROP TABLE IF EXISTS product_store;
                         DROP TABLE IF EXISTS product_brand;
+                        DROP TABLE IF EXISTS product_category;
                         
                         CREATE TABLE category(
                             id int NOT NULL AUTO_INCREMENT,
@@ -49,7 +50,6 @@ class ManageDb:
                             url varchar(300) DEFAULT NULL,
                             picture_url varchar(300) DEFAULT NULL,
                             nutriscore varchar(5) DEFAULT NULL,
-                            category_id int DEFAULT NULL,
                             PRIMARY KEY(id))
                             ENGINE=InnoDB;
 
@@ -73,6 +73,11 @@ class ManageDb:
                         CREATE TABLE product_brand (
                             id_product int DEFAULT NULL,
                             id_brand int DEFAULT NULL)
+                            ENGINE=InnoDB;
+                            
+                        CREATE TABLE product_category (
+                            id_product int DEFAULT NULL,
+                            id_category int DEFAULT NULL)
                             ENGINE=InnoDB; 
                         """
 
@@ -137,7 +142,6 @@ class ManageDb:
         """
             Insertion des données dans la base (n-n)
         """
-        my_list = ["id", "product", "store", "name", "product_store", "product_brand", "id_product", "id_store"]
 
         for product in instantiated_list:
             my_product_id = tuple
@@ -150,15 +154,47 @@ class ManageDb:
                 my_product_id = row
                 print(my_product_id)
 
-            list_of_splited_stores = product.store.split(",")
+            list_of_splited_items = []
+
+            if name_of_table2 == 'store':
+                list_of_splited_stores = product.store.split(",")
+                list_of_splited_items = list_of_splited_stores
+            if name_of_table2 == 'brand':
+                list_of_splited_brands = product.brand.split(",")
+                list_of_splited_items = list_of_splited_brands
+            if name_of_table2 == 'category':
+                list_of_splited_categories = product.category.split(",")
+                list_of_splited_items = list_of_splited_categories
+
+            """temp_all = []
+            final_temp = []
+            cls.setted_items = []
+
+            for item in items:
+                list_of_splited_items = item.split(",")
+                for f in range(len(list_of_splited_items)):
+                    for i in list_of_splited_items:
+                        temp = i.split(",")
+                        temp_all.append(temp)
+
+            for i in temp_all:
+                for x in i:
+                    final_temp.append(x.strip())
+            ready = list(set(final_temp))
+
+            for z in ready:
+                cls.setted_items.append([z])
+
+            """
+            # GROS PROBLEME CETTE METHODE LIMTE A DEUX CAT OU DEUX BARND OU DEUX STORE !! utiliser len ou range(len) comme en test
             first_store = []
             second_store = []
 
             try:
-                second_store = list_of_splited_stores[1].strip()
-                first_store = list_of_splited_stores[0].strip()
+                second_store = list_of_splited_items[1].strip()
+                first_store = list_of_splited_items[0].strip()
             except IndexError:
-                first_store = list_of_splited_stores[0].strip()
+                first_store = list_of_splited_items[0].strip()
 
             query_store_id1 = f'SELECT id FROM {name_of_table2} WHERE name = "{first_store}"'
             print(query_store_id1)
@@ -179,7 +215,6 @@ class ManageDb:
             query_insert = f"INSERT INTO {name_of_table3} ({column1}, {column2}) VALUES (%s, %s)"
             cls.cursor.execute(query_insert, (my_product_id[0], my_store_id[0]))
             # the result of the select is a lone tuples, so i select just the data not the tuple.
-
 
 
 

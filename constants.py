@@ -5,7 +5,7 @@ import Product
 import Brand
 import Store
 
-NAME_OF_TABLE = ["category", "product", "store", "brand", "product_store", "product_brand"]
+NAME_OF_TABLE = ["category", "product", "store", "brand", "product_store", "product_brand", "product_category"]
 COLUMN = ["name", "url", "picture_url", "nutriscore", "id", "id_category", "id_store", "id_brand", "id_product"]
 SQL_ARGS = "*"
 
