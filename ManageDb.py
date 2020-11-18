@@ -142,10 +142,11 @@ class ManageDb:
         """
             Insertion des données dans la base (n-n)
         """
+        cat_unfounded = []
 
         for product in instantiated_list:
-            my_product_id = tuple
-            my_store_id = tuple
+            my_product_id = ()
+            my_item_id = ()
 
             query_product_id = f'SELECT id FROM {name_of_table1} WHERE name = "{product.name}"'
             print(query_product_id)
@@ -166,57 +167,37 @@ class ManageDb:
                 list_of_splited_categories = product.category.split(",")
                 list_of_splited_items = list_of_splited_categories
 
-            """temp_all = []
+            temp_all = []
             final_temp = []
-            cls.setted_items = []
 
-            for item in items:
-                list_of_splited_items = item.split(",")
-                for f in range(len(list_of_splited_items)):
-                    for i in list_of_splited_items:
-                        temp = i.split(",")
-                        temp_all.append(temp)
+            for f in range(len(list_of_splited_items)):
+                for i in list_of_splited_items:
+                    temp = i.split(",")
+                    temp_all.append(temp)
 
             for i in temp_all:
                 for x in i:
                     final_temp.append(x.strip())
             ready = list(set(final_temp))
-
+            print(ready)
             for z in ready:
-                cls.setted_items.append([z])
+                query_item_id = f'SELECT id FROM {name_of_table2} WHERE name = "{z}"'
+                print(query_item_id)
+                cls.cursor.execute(query_item_id)
 
-            """
-            # GROS PROBLEME CETTE METHODE LIMTE A DEUX CAT OU DEUX BARND OU DEUX STORE !! utiliser len ou range(len) comme en test
-            first_store = []
-            second_store = []
+                for line in cls.cursor:  # this method get a tuple instead of a list of tuples with fetch.
+                    my_item_id = line
+                    print(my_item_id)
 
             try:
-                second_store = list_of_splited_items[1].strip()
-                first_store = list_of_splited_items[0].strip()
+                query_insert = f"INSERT INTO {name_of_table3} ({column1}, {column2}) VALUES (%s, %s)"
+                cls.cursor.execute(query_insert, (my_product_id[0], my_item_id[0]))
+                # the result of the select is a lone tuples, so i select just the data not the tuple.
+                """TypeError"""
+
             except IndexError:
-                first_store = list_of_splited_items[0].strip()
-
-            query_store_id1 = f'SELECT id FROM {name_of_table2} WHERE name = "{first_store}"'
-            print(query_store_id1)
-            cls.cursor.execute(query_store_id1)
-
-            for line in cls.cursor:  # this method get a tuple instead of a list of tuples with fetch.
-                my_store_id = line
-                print(my_store_id)
-
-            if second_store != []:
-                query_store_id2 = f'SELECT id FROM {name_of_table2} WHERE name = "{second_store}"'
-                print(query_store_id2)
-                cls.cursor.execute(query_store_id2)
-                for line in cls.cursor:  # this method get a tuple instead of a list of tuples with fetch.
-                    my_store_id1 = line
-                    print(my_store_id1)
-
-            query_insert = f"INSERT INTO {name_of_table3} ({column1}, {column2}) VALUES (%s, %s)"
-            cls.cursor.execute(query_insert, (my_product_id[0], my_store_id[0]))
-            # the result of the select is a lone tuples, so i select just the data not the tuple.
-
-
-
-
+                cat_unfounded.append(my_item_id)
+                continue
+        print(f'{cat_unfounded} categories were unfounded')
+        #  l'erreur vient de lorsque des catégories inexistantes sont trouvées ( noms en anglais ou allemand pricnipalmeent)
 
