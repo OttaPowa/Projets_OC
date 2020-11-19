@@ -32,11 +32,12 @@ class PrepareData:
 
         for categories in cls.result["tags"]:
             if min_product <= categories["products"] <= max_product:
-                print(f'Récupération de la catégorie {categories["name"]}')
+                """print(f'Récupération de la catégorie {categories["name"]}')"""
                 cleaned_categories.append((categories["name"], categories["url"]))
 
         cls.cleaned_categories = cleaned_categories
-        print(f'\n{len(cls.cleaned_categories)} catégories ont été récupérées après triage')
+        """print(f'\n{len(cls.cleaned_categories)} catégories ont été récupérées après triage')"""
+        print("veuillez patienter lors du tri des données, celui ci peut prendre un peu de temps... ")
 
     @classmethod
     def get_and_sort_products(cls):
@@ -73,10 +74,10 @@ class PrepareData:
             uncleaned_products.append(temp_prod)
             position_in_cat_list += 1
 
-        print(f'\n{del_el} produits ont été ignorés car une clé était manquante\n')
+        """print(f'\n{del_el} produits ont été ignorés car une clé était manquante\n')"""
 
         for i in uncleaned_products:
-            print(f'{len(i)} produits ont été récupérés dans la catégorie {cls.cleaned_categories[x][0]}')
+            """print(f'{len(i)} produits ont été récupérés dans la catégorie {cls.cleaned_categories[x][0]}')"""
             x += 1
 
         for my_list in uncleaned_products:
@@ -89,7 +90,7 @@ class PrepareData:
                 else:
                     cls.raw_products.append(my_product)
 
-        print(f"\n{empty_slot} produits ont été ignorés car certaines données étaient manquantes\n")
+        """print(f"\n{empty_slot} produits ont été ignorés car certaines données étaient manquantes\n")"""
 
 
     @classmethod
@@ -143,8 +144,6 @@ class PrepareData:
 
         for z in ready:
             cls.setted_items.append([z])
-        """print(cls.setted_items)
-        print(len(cls.setted_items))"""
 
     @classmethod
     def get_url(cls, list_of_names):

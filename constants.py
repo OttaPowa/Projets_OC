@@ -17,4 +17,7 @@ INSERT_PRODUCTS = f"INSERT INTO {NAME_OF_TABLE[1]} ({COLUMN[0]}, {COLUMN[1]}, {C
 DICT_OF_CLASSES = {'Store': Store.Store, 'Brand': Brand.Brand, 'Product': Product.Product,
                    'Category': Category.Category}
 
+GREETING_MESSAGE = "\nCette application vous permet de rechercher un produit pour lequel vous souhaitez trouver un équivalent plus sain.\n" \
+                   "Naviguez a travers les catégories pour trouver le produit que vous désirez.\n"
 
+test = ("f", "t")

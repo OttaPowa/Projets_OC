@@ -109,15 +109,21 @@ class ManageDb:
         """
             select function in SQL
         """
+        #  a modifier!, codé en dur ne fonctione que pour une seule ou deux colones pas plus
+        """for i in range(len(what_to_select)):
+            j = i + 1"""
+        try:
+            cls.cursor.execute(f"SELECT {what_to_select} FROM {name_of_table}")
 
-        cls.cursor.execute(f"SELECT {what_to_select} FROM {name_of_table}")
+        except:
+            cls.cursor.execute(f"SELECT {what_to_select[0]},{what_to_select[1]} FROM {name_of_table}")
 
         for lines in cls.cursor:  # affiche les tuples les uns sous les autres
             print(lines)
 
         """rows = cls.cursor.fetchall()# affiche les tuples les uns après les autres
                 print(rows) moins lisible je trouve , de plus fetchall renvoie une liste 
-                de tuple alors que cette methode seulemnt un tuple"""
+                de tuple alors que cette methode seulement un tuple"""
 
     @classmethod
     def fill(cls, insert_statement, list_of_items):
@@ -138,7 +144,7 @@ class ManageDb:
         cls.connexion.commit()
 
     @classmethod
-    def insert_n_n_test(cls, instantiated_list, name_of_table1, name_of_table2, name_of_table3, column1, column2):
+    def insert_n_n(cls, instantiated_list, name_of_table1, name_of_table2, name_of_table3, column1, column2):
         """
             Insertion des données dans la base (n-n)
         """
@@ -149,11 +155,11 @@ class ManageDb:
             my_item_id = ()
 
             query_product_id = f'SELECT id FROM {name_of_table1} WHERE name = "{product.name}"'
-            print(query_product_id)
+            """print(query_product_id)"""
             cls.cursor.execute(query_product_id)
             for row in cls.cursor:
                 my_product_id = row
-                print(my_product_id)
+                """print(my_product_id)"""
 
             list_of_splited_items = []
 
@@ -179,25 +185,23 @@ class ManageDb:
                 for x in i:
                     final_temp.append(x.strip())
             ready = list(set(final_temp))
-            print(ready)
+
             for z in ready:
                 query_item_id = f'SELECT id FROM {name_of_table2} WHERE name = "{z}"'
-                print(query_item_id)
+
                 cls.cursor.execute(query_item_id)
 
                 for line in cls.cursor:  # this method get a tuple instead of a list of tuples with fetch.
                     my_item_id = line
-                    print(my_item_id)
 
             try:
                 query_insert = f"INSERT INTO {name_of_table3} ({column1}, {column2}) VALUES (%s, %s)"
                 cls.cursor.execute(query_insert, (my_product_id[0], my_item_id[0]))
                 # the result of the select is a lone tuples, so i select just the data not the tuple.
-                """TypeError"""
 
             except IndexError:
                 cat_unfounded.append(my_item_id)
                 continue
-        print(f'{cat_unfounded} categories were unfounded')
+        """print(f'{len(cat_unfounded)} categories were unfounded')"""
         #  l'erreur vient de lorsque des catégories inexistantes sont trouvées ( noms en anglais ou allemand pricnipalmeent)
 

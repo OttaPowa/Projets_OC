@@ -20,6 +20,8 @@ class Product:
             :type arg5: string
             :param arg6: nutriscore of the product
             :type arg6: string
+            :param arg7: categories of the product
+            :type arg7: string
         """
 
         self.name = args[0]
@@ -30,5 +32,3 @@ class Product:
         self.nutriscore = args[5]
         self.category = args[6]
         self.instantiated_products.append(self)
-
-# ajouter un arg6 avec les categories (verifier les implications dans le code d'un nouvel argument ajouté au constucter
