@@ -23,9 +23,9 @@ class Interactions:
         stat = True
         while stat:
             try:
-                cat_numbr = int(input("Tapez le numéro de la catégorie que vous souhaitez explorer:"))
+                cat_numbr = int(input("\nTapez le numéro de la catégorie que vous souhaitez explorer: "))
                 return cat_numbr
             except ValueError:
-                print("entrez un nombre s'il vous plait!")
+                print("\nentrez un nombre s'il vous plait!")
                 continue
 

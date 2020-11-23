@@ -32,7 +32,7 @@ class PrepareData:
 
         for categories in cls.result["tags"]:
             if min_product <= categories["products"] <= max_product:
-                """print(f'Récupération de la catégorie {categories["name"]}')"""
+                print(f'Récupération de la catégorie {categories["name"]}')
                 cleaned_categories.append((categories["name"], categories["url"]))
 
         cls.cleaned_categories = cleaned_categories
@@ -77,7 +77,7 @@ class PrepareData:
         """print(f'\n{del_el} produits ont été ignorés car une clé était manquante\n')"""
 
         for i in uncleaned_products:
-            """print(f'{len(i)} produits ont été récupérés dans la catégorie {cls.cleaned_categories[x][0]}')"""
+            print(f'{len(i)} produits ont été récupérés dans la catégorie {cls.cleaned_categories[x][0]}')
             x += 1
 
         for my_list in uncleaned_products:
@@ -122,7 +122,7 @@ class PrepareData:
 
 
     @classmethod
-    def get_and_set(cls, items):
+    def split_and_set(cls, items):
         """
             split and set the items regardless of the len of the list
         """

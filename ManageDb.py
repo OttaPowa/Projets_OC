@@ -15,6 +15,7 @@ class ManageDb:
 
 
     SQL_CAT_INSERT = """INSERT INTO category (name,url) VALUES (%(name)s, %(url)s)"""
+    list_of_prod_id = []
 
     @classmethod
     def verify_prerequisite(cls):
@@ -112,18 +113,23 @@ class ManageDb:
         #  a modifier!, codé en dur ne fonctione que pour une seule ou deux colones pas plus
         """for i in range(len(what_to_select)):
             j = i + 1"""
+        """
+        if what_to_select is tuple:
+            for x in enumerate(len(what_to_select)):
+                cls.cursor.execute(f"SELECT {what_to_select[0]},{what_to_select[1]} FROM {name_of_table}")"""
+        cls.list_of_prod_id = []
+
         try:
             cls.cursor.execute(f"SELECT {what_to_select} FROM {name_of_table}")
 
         except:
             cls.cursor.execute(f"SELECT {what_to_select[0]},{what_to_select[1]} FROM {name_of_table}")
 
-        for lines in cls.cursor:  # affiche les tuples les uns sous les autres
-            print(lines)
+        rows = cls.cursor.fetchall()
+        for tup in rows:  # display in a convenient way
+            cls.list_of_prod_id.append(tup)
+            print(tup)
 
-        """rows = cls.cursor.fetchall()# affiche les tuples les uns après les autres
-                print(rows) moins lisible je trouve , de plus fetchall renvoie une liste 
-                de tuple alors que cette methode seulement un tuple"""
 
     @classmethod
     def fill(cls, insert_statement, list_of_items):
@@ -155,24 +161,25 @@ class ManageDb:
             my_item_id = ()
 
             query_product_id = f'SELECT id FROM {name_of_table1} WHERE name = "{product.name}"'
-            """print(query_product_id)"""
+            print(query_product_id)
             cls.cursor.execute(query_product_id)
             for row in cls.cursor:
                 my_product_id = row
-                """print(my_product_id)"""
+                print(my_product_id)
 
             list_of_splited_items = []
 
             if name_of_table2 == 'store':
                 list_of_splited_stores = product.store.split(",")
                 list_of_splited_items = list_of_splited_stores
-            if name_of_table2 == 'brand':
+            elif name_of_table2 == 'brand':
                 list_of_splited_brands = product.brand.split(",")
                 list_of_splited_items = list_of_splited_brands
-            if name_of_table2 == 'category':
+            elif name_of_table2 == 'category':
                 list_of_splited_categories = product.category.split(",")
                 list_of_splited_items = list_of_splited_categories
-
+            else:
+                print("BEUG")
             temp_all = []
             final_temp = []
 
@@ -185,23 +192,27 @@ class ManageDb:
                 for x in i:
                     final_temp.append(x.strip())
             ready = list(set(final_temp))
+            print(ready)
 
             for z in ready:
+                print(z)
                 query_item_id = f'SELECT id FROM {name_of_table2} WHERE name = "{z}"'
+                print(query_item_id)
 
                 cls.cursor.execute(query_item_id)
 
                 for line in cls.cursor:  # this method get a tuple instead of a list of tuples with fetch.
                     my_item_id = line
+                    print(my_item_id)
 
-            try:
-                query_insert = f"INSERT INTO {name_of_table3} ({column1}, {column2}) VALUES (%s, %s)"
-                cls.cursor.execute(query_insert, (my_product_id[0], my_item_id[0]))
-                # the result of the select is a lone tuples, so i select just the data not the tuple.
+                try: # parfois renvoie plusieru fois la meme infi (ex: (122,45) (122,45) (122,44) vusiblement cela se rpoduit lors de cat introuvable comme des cat en anglais
+                    query_insert = f"INSERT INTO {name_of_table3} ({column1}, {column2}) VALUES (%s, %s)"
+                    cls.cursor.execute(query_insert, (my_product_id[0], my_item_id[0]))
+                    # the result of the select is a lone tuples, so i select just the data not the tuple.
 
-            except IndexError:
-                cat_unfounded.append(my_item_id)
-                continue
+                except IndexError:
+                    cat_unfounded.append(my_item_id)
+                    continue
         """print(f'{len(cat_unfounded)} categories were unfounded')"""
         #  l'erreur vient de lorsque des catégories inexistantes sont trouvées ( noms en anglais ou allemand pricnipalmeent)
 
