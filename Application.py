@@ -59,15 +59,16 @@ def main():
     else:
         ManageDb.select((COLUMN[4], COLUMN[0]), f'{NAME_OF_TABLE[0]} ORDER BY name')
 
+        cat_nbr = Interactions.selection(NAMES_IN_FRENCH[0])
+        ManageDb.select((COLUMN[8], COLUMN[5]), f'{NAME_OF_TABLE[6]} WHERE {COLUMN[5]} = "{cat_nbr}"')
+        print('Voici les produits faisant partis de cette catégorie: ')
 
-        nbr = Interactions.selection()
-        ManageDb.select((COLUMN[8], COLUMN[5]), f'{NAME_OF_TABLE[6]} WHERE {COLUMN[5]} = "{nbr}"')
-        print(f' VOICI LIST OF PROD ID : {ManageDb.list_of_prod_id}')
         for i in ManageDb.list_of_prod_id:
             ManageDb.select((COLUMN[4], COLUMN[0]), f"{NAME_OF_TABLE[1]} WHERE {COLUMN[4]} = {i[0]}")
-            #affiche l'id et le name du ou des produits en focntion de l'id catégorie
+            #affiche l'id et le name du ou des produits en fonction de l'id catégorie
 
-
+        prod_nbr = Interactions.selection(NAMES_IN_FRENCH[1])
+        # donner la possibiliter de revenir aux catégories et de quiter
 
 if __name__ == '__main__':
     main()

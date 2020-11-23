@@ -7,6 +7,7 @@ import Store
 
 NAME_OF_TABLE = ["category", "product", 'store', "brand", "product_store", "product_brand", "product_category"]
 COLUMN = ["name", "url", "picture_url", "nutriscore", "id", "id_category", "id_store", "id_brand", "id_product", "*"]
+NAMES_IN_FRENCH = ["de la categorie", " du produit"]
 
 INSERT_CATS = f"INSERT INTO {NAME_OF_TABLE[0]} ({COLUMN[0]}, {COLUMN[1]}) VALUES (%s, %s)"
 INSERT_STORES = f"INSERT INTO {NAME_OF_TABLE[2]} ({COLUMN[0]}) VALUES (%s)"
